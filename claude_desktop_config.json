@@ -1,0 +1,10 @@
+{
+    "mcpServers": {
+        "trade": {
+            "command": "/Users/shivamkumar/.bun/bin/bun",
+            "args":[
+                "/Users/shivamkumar/Desktop/zerodha-ai/index.ts"
+            ]
+        }
+    }
+}

@@ -3,10 +3,14 @@ import dotenv from "dotenv";
 
 //const apiSecret = process.env.API_SECRET || "";
 //const requestToken = process.env.REQUEST_TOKEN||"";
+dotenv.config();
 const apiKey = process.env.API_KEY || "";
 let access_token = process.env.ACCESS_TOKEN || "";
+
 const kc = new KiteConnect({ api_key: apiKey });
 console.log(kc.getLoginURL());
+kc.setAccessToken(access_token);
+
 export async function placeOrder(
   tradingsymbol: string,
   transaction_type: "BUY" | "SELL",
@@ -14,7 +18,7 @@ export async function placeOrder(
 ) {
   try {
     // await generateSession();
-    kc.setAccessToken(access_token);
+  
 
     await kc.placeOrder("regular", {
       exchange: "NSE",
@@ -28,6 +32,20 @@ export async function placeOrder(
     console.error(err);
   }
 }
+
+export async function getPositions() {
+    try {
+        const holdings = await kc.getPositions();
+        let allHoldings = "";
+        holdings.net.map((holding) => {
+            allHoldings += `stock: ${holding.tradingsymbol}, quantity: ${holding.quantity}, currentPrice: ${holding.last_price}\n`;
+        });
+        return allHoldings;
+    } catch (err) {
+        console.error("Error fetching holdings:", err);
+        throw err;
+    }
+    }
 
 // async function generateSession() {
 //   try {

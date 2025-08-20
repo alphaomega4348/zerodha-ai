@@ -23,7 +23,7 @@ server.tool("add",
 );
 
 // Add a subtraction tool
-server.tool("Buy a stock",
+server.tool("buy-stock","Buys the specified stock with the given quantity on Zerodha.It is assumed that the user has already logged in and has an active session. It executes a real market order for the user on exchange.", 
     {
         stock:z.string(),
         quantity: z.number().int().positive()
@@ -40,7 +40,7 @@ server.tool("Buy a stock",
 )
 
 // Add a tool to sell a stock
-server.tool("Sell a stock",
+server.tool("sell-stock","Sells the specified stock with the given quantity on Zerodha for the user. It is assumed that the user has already logged in and has an active session. It executes a real market order for the user on exchange.",
     {
         stock:z.string(),
         quantity: z.number().int().positive()
@@ -52,6 +52,20 @@ server.tool("Sell a stock",
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : "Unknown error";
             return { content: [{ type: "text", text: `Error placing order: ${errorMessage}` }] };
+        }
+    }
+)
+
+//Show portfolio
+server.tool("show-portfolio","Fetches the user's current holdings from Zerodha. It is assumed that the user has already logged in and has an active session.",
+    {},
+    async() => {
+        try {
+            const holdings = await import("./trade").then(mod => mod.getHoldings());
+            return { content: [{ type: "text", text: holdings }] };
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : "Unknown error";
+            return { content: [{ type: "text", text: `Error fetching holdings: ${errorMessage}` }] };
         }
     }
 )
