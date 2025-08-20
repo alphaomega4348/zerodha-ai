@@ -11,7 +11,7 @@ const server = new McpServer({
 });
 
 // Add an addition tool
-server.registerTool("add",
+server.tool("add",
   {
     title: "Addition Tool",
     description: "Add two numbers",
@@ -21,6 +21,40 @@ server.registerTool("add",
     content: [{ type: "text", text: String(a + b) }]
   })
 );
+
+// Add a subtraction tool
+server.tool("Buy a stock",
+    {
+        stock:z.string(),
+        quantity: z.number().int().positive()
+    },
+    async ({ stock, quantity }) => {
+        try {
+            await placeOrder(stock, "BUY", quantity);
+            return { content: [{ type: "text", text: `Order placed for buying ${quantity} shares of ${stock}` }] };
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : "Unknown error";
+            return { content: [{ type: "text", text: `Error placing order: ${errorMessage}` }] };
+        }
+    }
+)
+
+// Add a tool to sell a stock
+server.tool("Sell a stock",
+    {
+        stock:z.string(),
+        quantity: z.number().int().positive()
+    },
+    async ({ stock, quantity }) => {
+        try {
+            await placeOrder(stock, "SELL", quantity);
+            return { content: [{ type: "text", text: `Order placed for selling ${quantity} shares of ${stock}` }] };
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : "Unknown error";
+            return { content: [{ type: "text", text: `Error placing order: ${errorMessage}` }] };
+        }
+    }
+)
 
 // Start receiving messages on stdin and sending messages on stdout
 const transport = new StdioServerTransport();
